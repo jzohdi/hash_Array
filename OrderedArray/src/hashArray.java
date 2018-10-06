@@ -1,25 +1,53 @@
 
 public class hashArray {
 	
-	static tableData[] array;
-	static int capacity;
-	static Integer[] indices;
-	static int bound = 0;
+	tableData[] valuesArray;
+	public int capacity;
+	int [] indices;
+	int bound = 0;
 	
 	public hashArray( int capacity ) {
-		capacity = nextPrime( capacity );
-		array = new tableData[ capacity ];
-		indices = new Integer[capacity];
+		this.capacity = nextPrime( capacity );
+		valuesArray = new tableData[ this.capacity ];
+		indices = new int[ this.capacity ];
 	}
 	
-	public static void insert( int value ) {
+	public void append( int value ) {
 		tableData data = new tableData( value );
-		array[ value % capacity ] = data;
-		indices[bound] = value % capacity;
-		bound++;
-		return;
+		int hash = hashCode( String.valueOf( value ) );
+		insertData( hash , data );
 	}
-	
+	public void append( char value ) {
+		tableData data = new tableData( value );
+		int hash = hashCode( String.valueOf( value ) );
+		insertData( hash , data );
+	}
+	public void insertData( int hash , tableData data ) {
+		int index = hash;
+		if ( index > capacity ) {
+			capacity = index;
+			valuesArray = copyArray();
+			
+		}
+//		System.out.println(index);
+		valuesArray[ index ] = data;
+		indices[bound] = index;
+		bound++;
+	}
+	public tableData[] copyArray() {
+		tableData[] tempArray = new tableData[ capacity + 1 ];
+		System.arraycopy( valuesArray, 0, tempArray, 0, valuesArray.length);
+		return tempArray;
+	}
+	public int hashCode( String value ) {
+		int hash = 7;
+		for ( int x = 0; x < value.length(); x++ ) {
+			hash = hash*31 + value.charAt(x);
+			
+		}
+//		System.out.println(hash);
+		return hash;
+	}
 	private static int nextPrime( int n ) {
         if ( n % 2 == 0 )
             n++;
@@ -39,9 +67,9 @@ public class hashArray {
         return true;
     }
     
-    public static void print() {
+    public void print() {
     	for ( int index = 0; index < bound; index++ ) {
-    		System.out.print(array[indices[index]]);
+    		System.out.print(valuesArray[indices[index]] + " ");
     	}
     }
 
